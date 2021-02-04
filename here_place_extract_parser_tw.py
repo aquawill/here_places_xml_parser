@@ -4,9 +4,9 @@ import os
 
 import xmltodict
 
-# root = 'C:\\Users\\guanlwu\\Desktop\\TWN'
+root = 'C:\\Users\\guanlwu\\Desktop\\VDAM20144WVD000DPLAC\\TWN_20144\\TWN'
 quality_level_requirement = []
-root = input('Root of Places XML files: ')
+# root = input('Root of Places XML files: ')
 if os.path.exists(root):
     quality_level_input = input('Required quality levels (12345): ')
     if len(quality_level_input) > 0:
@@ -85,7 +85,9 @@ with open(os.path.join(root, 'merged.csv'), mode='w', encoding='utf-8', newline=
                                         baseText = primary_name_text_element.get('BaseText')
                                         if baseText.get('@languageType') == '':
                                             primary_name_text = baseText.get('#text')
-                                            # primary_name_string_located = True
+                                            break
+                                        elif not baseText.get('@languageType'):
+                                            primary_name_text = baseText.get('#text')
                                             break
                                 else:
                                     baseText = primary_name_textList_text.get('BaseText')
@@ -121,12 +123,17 @@ with open(os.path.join(root, 'merged.csv'), mode='w', encoding='utf-8', newline=
                                 chain_name_text = ''
                                 if content_base.get('ChainList'):
                                     chainList = content_base.get('ChainList')
-                                    # print(chainList.get('Chain'))
-                                    chain_id = chainList.get('Chain').get('Id')
-                                    chain_name = chainList.get('Chain').get('Name').get('Text')
-                                    if chain_name.get('@type') == 'OFFICIAL':
-                                        chain_name_text = chain_name.get('#text')
-                                    # print(chain_id, chain_name_text)
+                                    chain = chainList.get('Chain')
+                                    if isinstance(chain, list):
+                                        chain_id = chain[0].get('Id')
+                                    else:
+                                        chain_id = chain.get('Id')
+                                        try:
+                                            chain_name = chain.get('Name').get('Text')
+                                            if chain_name.get('@type') == 'OFFICIAL':
+                                                chain_name_text = chain_name.get('#text')
+                                        except:
+                                            pass
                                 line = [file, placeId, qualityLevel, primary_name_text, primary_category_categoryId, primary_category_categoryName_text_text, label, chain_id, chain_name_text, geoPositionRouting.get('lat'), geoPositionRouting.get('lng'), geoPositionDisplay.get('lat'), geoPositionDisplay.get('lng')]
                                 writer.writerow(line)
                         except Exception as e:
