@@ -4,9 +4,8 @@ import os
 
 import xmltodict
 
-root = 'C:\\Users\\guanlwu\\Desktop\\VDAM20144WVD000DPLAC\\TWN_20144\\TWN'
 quality_level_requirement = []
-# root = input('Root of Places XML files: ')
+root = input('Root of Places XML files: ')
 if os.path.exists(root):
     quality_level_input = input('Required quality levels (12345): ')
     if len(quality_level_input) > 0:
